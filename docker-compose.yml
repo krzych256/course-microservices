@@ -12,6 +12,7 @@ services:
       - naming-service
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-service:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-service:9411/
 
   currency-conversion:
     image: in28min/mmv2-currency-conversion-service:0.0.1-SNAPSHOT
@@ -24,6 +25,7 @@ services:
       - naming-service
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-service:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-service:9411/
 
   api-gateway:
     image: in28min/mmv2-api-gateway:0.0.1-SNAPSHOT
@@ -36,12 +38,21 @@ services:
       - naming-service
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-service:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-service:9411/
 
   naming-service:
     image: in28min/mmv2-naming-server:0.0.1-SNAPSHOT
     mem_limit: 700m
     ports:
       - "8761:8761"
+    networks:
+      - currency-network
+
+  zipkin-service:
+    image: openzipkin/zipkin:2.23
+    mem_limit: 300m
+    ports:
+      - "9411:9411"
     networks:
       - currency-network
 
